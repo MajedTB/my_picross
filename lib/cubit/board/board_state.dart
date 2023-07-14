@@ -5,6 +5,8 @@ abstract class BoardState {
   bool isValid = false;
   bool isAllFilled = false;
 
+  // TODO: board model should have numberOfFilledCells
+
   BoardState({this.isValid = false, this.isAllFilled = false});
 }
 

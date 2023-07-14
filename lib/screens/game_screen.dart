@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'cubit/board/board_cubit.dart';
+import '../cubit/cell/cell_cubit.dart';
+import '../cubit/cell/cell_state.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -16,10 +17,21 @@ class _GameScreenState extends State<GameScreen> {
   // MultipBlockB+PORVIEr
   bool _fillMode = true;
 
+  Widget getCellWidget(CellState state) {
+    print("state is ${state}");
+    if (state is CellFilled) {
+      return Icon(Icons.square);
+    } else if (state is CellCrossed) {
+      return Icon(Icons.close);
+    } else {
+      return SizedBox();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BoardCubit(),
+      create: (context) => CellCubit(),
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
         color: Colors.white,
@@ -38,35 +50,70 @@ class _GameScreenState extends State<GameScreen> {
                 ),
               ],
             ),
+            // Container(
+            //   width: 50,
+            //   height: 50,
+            //   decoration: BoxDecoration(border: Border.all()),
+            //   child: BlocBuilder<CellCubit, CellState>(
+            //     builder: (context, state) {
+            //       return GestureDetector(
+            //         onTap: () {
+            //           if (state is! CellFilled && _fillMode) {
+            //             context.read<CellCubit>().setFilled();
+            //           } else if (state is! CellCrossed && !_fillMode) {
+            //             context.read<CellCubit>().setCrossed();
+            //           } else {
+            //             context.read<CellCubit>().setEmpty();
+            //           }
+            //         },
+            //         child: Container(
+            //           decoration: BoxDecoration(
+            //             border: Border.all(width: 1),
+            //           ),
+            //           child: Center(
+            //             child: getCellWidget(state),
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             // Grid
-            BlocBuilder<BoardCubit, BoardState>(
-              builder: (context, state) {
-                return Expanded(
-                  child: GridView.builder(
-                      itemCount: 10 * 10,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 10,
-                        mainAxisSpacing: 0.0,
-                        crossAxisSpacing: 0.0,
-                      ),
-                      itemBuilder: (BuildContext context, int index) {
+            Expanded(
+              child: GridView.builder(
+                  itemCount: 10 * 10,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 10,
+                    mainAxisSpacing: 0.0,
+                    crossAxisSpacing: 0.0,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return BlocBuilder<CellCubit, CellState>(
+                      builder: (context, state) {
                         return GestureDetector(
                           onTap: () {
-                            context
-                                .read<BoardCubit>()
-                                .updateCell(index, _fillMode);
+                            print(
+                                "${index} ${state} ${_fillMode} ${state is! CellFilled}");
+                            if (state is! CellFilled && _fillMode) {
+                              context.read<CellCubit>().setFilled();
+                            } else if (state is! CellCrossed && !_fillMode) {
+                              context.read<CellCubit>().setCrossed();
+                            } else {
+                              context.read<CellCubit>().setEmpty();
+                            }
                           },
                           child: Container(
-                            decoration:
-                                BoxDecoration(border: Border.all(width: 1)),
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1),
+                            ),
                             child: Center(
-                              child: Icon(Icons.close),
+                              child: getCellWidget(state),
                             ),
                           ),
                         );
-                      }),
-                );
-              },
+                      },
+                    );
+                  }),
             ),
             ToggleButtons(
                 onPressed: (index) {
