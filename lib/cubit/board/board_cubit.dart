@@ -1,27 +1,24 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:my_picross/models/board.dart';
 
 part 'board_state.dart';
 
 class BoardCubit extends Cubit<BoardState> {
-  List<cell> board = List.generate(
-    10 * 10,
-    (index) => cell.empty,
-  );
-  BoardCubit() : super(BoardInitial());
+  final List<bool>? solution;
 
-  void updateCell(int index, bool fillMode) {
-    final clickedCell = board[index];
-    if (clickedCell != cell.filled && fillMode) {
-      board[index] = cell.filled;
-    } else if (clickedCell != cell.crossed && !fillMode) {
-      board[index] = cell.crossed;
-    } else {
-      board[index] = cell.empty;
-    }
+  BoardCubit(this.solution) {
+    super(BoardInitial());
+    this.solution = Board.random10().solution;
+  }
 
-    emit(BoardUpdated());
+  void incrementFilledCells() {
+    print(state.filledCells);
+    emit(BoardUpdated(state.filledCells + 1));
+  }
+
+  void decrementFilledCells() {
+    print(state.filledCells);
+    emit(BoardUpdated(state.filledCells - 1));
   }
 }
-
-enum cell { filled, crossed, empty }

@@ -2,14 +2,20 @@ part of 'board_cubit.dart';
 
 @immutable
 abstract class BoardState {
-  bool isValid = false;
-  bool isAllFilled = false;
+  final int filledCells;
 
-  // TODO: board model should have numberOfFilledCells
+  BoardState({required this.filledCells});
 
-  BoardState({this.isValid = false, this.isAllFilled = false});
+  // property list from Equatable, to update states
+  @override
+  List<Object?> get props => [filledCells];
 }
 
-class BoardInitial extends BoardState {}
+class BoardInitial extends BoardState {
+  BoardInitial() : super(filledCells: 0);
+}
 
-class BoardUpdated extends BoardState {}
+class BoardUpdated extends BoardState {
+  int newValue;
+  BoardUpdated(this.newValue) : super(filledCells: newValue);
+}
