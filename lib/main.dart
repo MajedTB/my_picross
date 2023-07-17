@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_picross/screens/cubit/board/board_cubit.dart';
 import 'package:my_picross/screens/game_screen.dart';
 
 void main() {
@@ -13,17 +11,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'My Picross',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
       home: Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: Text("My Picross"),
-          backgroundColor: Color(0xFFEEEEEE),
+          backgroundColor: Colors.grey,
         ),
         body: GameScreen(),
       ),
