@@ -1,21 +1,16 @@
 part of 'board_cubit.dart';
 
-@immutable
-abstract class BoardState {
-  final int filledCells;
+// TODO: Remark: the user must fill the board all with filled & crosses (no empty)
+// TODO: auto crossing
 
-  BoardState({required this.filledCells});
+@immutable
+class BoardState {
+  final int filledCells;
+  final List<cellState> board;
+
+  BoardState({required this.board, this.filledCells = 0});
 
   // property list from Equatable, to update states
   @override
-  List<Object?> get props => [filledCells];
-}
-
-class BoardInitial extends BoardState {
-  BoardInitial() : super(filledCells: 0);
-}
-
-class BoardUpdated extends BoardState {
-  int newValue;
-  BoardUpdated(this.newValue) : super(filledCells: newValue);
+  List<Object?> get props => [board, filledCells];
 }

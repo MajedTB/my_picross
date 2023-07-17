@@ -2,25 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_picross/cubit/board/board_cubit.dart';
 
-import '../cubit/cell/cell_cubit.dart';
-import '../cubit/cell/cell_state.dart';
+import '../constants.dart';
 
 class CellWidget extends StatelessWidget {
   final bool fillMode;
+  final int index;
 
   const CellWidget({
     super.key,
     required this.fillMode,
+    required this.index,
   });
 
-  Widget _getCellWidget(CellState state) {
+  Widget _getCellWidget(cellState state) {
     print("state is ${state}");
-    if (state is CellFilled) {
+    if (state == cellState.filled) {
       return Container(color: Colors.black);
-    } else if (state is CellCrossed) {
-      return Icon(
-        Icons.close,
-      );
+    } else if (state == cellState.crossed) {
+      return Icon(Icons.close);
     } else {
       return SizedBox();
     }
@@ -28,21 +27,15 @@ class CellWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CellCubit, CellState>(
+    // TODO try to omit blocbuilder and see
+    return BlocBuilder<BoardCubit, BoardState>(
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            // print("${index} ${state} ${_fillMode} ${state is! CellFilled}");
-            if (state is! CellFilled && fillMode) {
-              context.read<CellCubit>().setFilled();
-              context.read<BoardCubit>().incrementFilledCells();
-            } else if (state is! CellCrossed && !fillMode) {
-              context.read<CellCubit>().setCrossed();
-              context.read<BoardCubit>().decrementFilledCells();
-            } else {
-              context.read<CellCubit>().setEmpty();
-              context.read<BoardCubit>().decrementFilledCells();
-            }
+            BlocProvider.of<BoardCubit>(context).toggleCell(
+              fillModeEnabled: fillMode,
+              index: index,
+            );
           },
           child: Container(
             decoration: BoxDecoration(
@@ -52,7 +45,7 @@ class CellWidget extends StatelessWidget {
               ),
             ),
             child: Center(
-              child: _getCellWidget(state),
+              child: _getCellWidget(state.board[index]),
             ),
           ),
         );

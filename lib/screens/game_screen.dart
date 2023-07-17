@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_picross/cubit/board/board_cubit.dart';
+import 'package:my_picross/models/board_generator.dart';
 
-import '../cubit/cell/cell_cubit.dart';
-import '../cubit/cell/cell_state.dart';
 import '../widgets/cell_widget.dart';
 
 class GameScreen extends StatefulWidget {
@@ -19,15 +18,11 @@ class _GameScreenState extends State<GameScreen> {
   // MultipBlockB+PORVIEr
   bool _fillMode = true;
 
-  final List<CellCubit> cells = List.generate(
-    10 * 10,
-    (index) => CellCubit(),
-  );
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BoardCubit(),
+      create: (context) =>
+          BoardCubit(generatedBoard: BoardGenerator.random10x10()),
       child: BlocBuilder<BoardCubit, BoardState>(
         builder: (context, state) {
           return Container(
@@ -43,7 +38,7 @@ class _GameScreenState extends State<GameScreen> {
                     Icon(Icons.square, size: 32),
                     SizedBox(width: 5),
                     Text(
-                      "${state.filledCells}/N",
+                      "${state.filledCells}/${BlocProvider.of<BoardCubit>(context).generatedBoard.numOfFilled}",
                       style:
                           TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
                     ),
@@ -52,17 +47,15 @@ class _GameScreenState extends State<GameScreen> {
                 // Grid
                 Expanded(
                   child: GridView.builder(
-                      itemCount: 10 * 10,
+                      itemCount: state.board.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 10,
                         mainAxisSpacing: 0.0,
                         crossAxisSpacing: 0.0,
                       ),
+                      physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (BuildContext context, int index) {
-                        return BlocProvider.value(
-                          value: cells[index],
-                          child: CellWidget(fillMode: _fillMode),
-                        );
+                        return CellWidget(fillMode: _fillMode, index: index);
                       }),
                 ),
                 ToggleButtons(
