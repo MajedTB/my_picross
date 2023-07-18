@@ -7,9 +7,9 @@ import '../../constants.dart';
 part 'board_state.dart';
 
 class BoardCubit extends Cubit<BoardState> {
-  final BoardGenerator generatedBoard;
+  final BoardGenerator boardSolution;
 
-  BoardCubit({required this.generatedBoard})
+  BoardCubit({required this.boardSolution})
       : super(BoardState(board: List.filled(10 * 10, cellState.empty)));
 
   void toggleCell({index, fillModeEnabled}) {

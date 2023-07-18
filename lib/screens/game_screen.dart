@@ -17,12 +17,13 @@ class _GameScreenState extends State<GameScreen> {
   // final CellCubit _cellCubit = CellCubit();
   // MultipBlockB+PORVIEr
   bool _fillMode = true;
+  // TODO: change board
+  BoardGenerator boardSolution = BoardGenerator.random10x10();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          BoardCubit(generatedBoard: BoardGenerator.random10x10()),
+      create: (context) => BoardCubit(boardSolution: boardSolution),
       child: BlocBuilder<BoardCubit, BoardState>(
         builder: (context, state) {
           return Container(
@@ -38,7 +39,7 @@ class _GameScreenState extends State<GameScreen> {
                     Icon(Icons.square, size: 32),
                     SizedBox(width: 5),
                     Text(
-                      "${state.filledCells}/${BlocProvider.of<BoardCubit>(context).generatedBoard.numOfFilled}",
+                      "${state.filledCells}/${BlocProvider.of<BoardCubit>(context).boardSolution.numOfFilled}",
                       style:
                           TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
                     ),
