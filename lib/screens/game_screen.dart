@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_picross/cubit/board/board_cubit.dart';
 import 'package:my_picross/models/board_generator.dart';
 
+import '../constants.dart';
 import '../widgets/cell_widget.dart';
 
 class GameScreen extends StatefulWidget {
@@ -19,6 +20,14 @@ class _GameScreenState extends State<GameScreen> {
   bool _fillMode = true;
   // TODO: change board
   BoardGenerator boardSolution = BoardGenerator.random10x10();
+  List<List<int>>? horizontalHints, verticalHints;
+
+  @override
+  void initState() {
+    horizontalHints = boardSolution.getHorizontalHints();
+    verticalHints = boardSolution.getVerticalHints();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +65,31 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (BuildContext context, int index) {
-                        return CellWidget(fillMode: _fillMode, index: index);
+                        if (index == 0) {
+                          // Return widget for top-left cell
+                          return Center(child: Text('Top-Left'));
+                        } else if (index < 10) {
+                          // Return widget for top row
+                          return Container(
+                            child: Center(
+                              child: ListView.builder(
+                                itemBuilder: (context, listIndex) {
+                                  return Text(
+                                    "${verticalHints![index][listIndex]}",
+                                  );
+                                },
+                                itemCount: verticalHints![index].length,
+                              ),
+                            ),
+                          );
+                          return Center(child: Text('Top $index'));
+                        } else if (index % 10 == 0) {
+                          // Return widget for left column
+                          return Center(child: Text('Left ${index ~/ 10}'));
+                        } else {
+                          // Return widget for cell content
+                          return CellWidget(fillMode: _fillMode, index: index);
+                        }
                       }),
                 ),
                 ToggleButtons(

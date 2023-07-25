@@ -15,7 +15,6 @@ class CellWidget extends StatelessWidget {
   });
 
   Widget _getCellWidget(cellState state) {
-    print("state is ${state}");
     if (state == cellState.filled) {
       return Container(color: Colors.black);
     } else if (state == cellState.crossed) {
