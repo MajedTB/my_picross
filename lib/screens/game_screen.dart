@@ -55,42 +55,46 @@ class _GameScreenState extends State<GameScreen> {
                   ],
                 ),
                 // Grid
-                Expanded(
-                  child: GridView.builder(
-                      itemCount: state.board.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 10,
-                        mainAxisSpacing: 0.0,
-                        crossAxisSpacing: 0.0,
-                      ),
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        if (index == 0) {
-                          // Return widget for top-left cell
-                          return Center(child: Text('Top-Left'));
-                        } else if (index < 10) {
-                          // Return widget for top row
-                          return Container(
-                            child: Center(
-                              child: ListView.builder(
-                                itemBuilder: (context, listIndex) {
-                                  return Text(
-                                    "${verticalHints![index][listIndex]}",
-                                  );
-                                },
-                                itemCount: verticalHints![index].length,
-                              ),
-                            ),
-                          );
-                          return Center(child: Text('Top $index'));
-                        } else if (index % 10 == 0) {
-                          // Return widget for left column
-                          return Center(child: Text('Left ${index ~/ 10}'));
-                        } else {
-                          // Return widget for cell content
-                          return CellWidget(fillMode: _fillMode, index: index);
-                        }
-                      }),
+                Table(
+                  defaultVerticalAlignment: TableCellVerticalAlignment.bottom,
+                  // defaultColumnWidth: FixedColumnWidth(24),
+                  children: [
+                    /// Hints Row
+                    TableRow(
+                      children: verticalHints!.map((verticalHint) {
+                        return TableCell(
+                          child: Column(
+                            children: verticalHint
+                                .map((number) => Center(
+                                      child: Text("$number"),
+                                    ))
+                                .toList(),
+                          ),
+                        );
+                        // Container(
+                        //   child: Center(
+                        //     child: ListView.builder(
+                        //       itemBuilder: (context, listIndex) {
+                        //         return Text(
+                        //           "${verticalHint[listIndex]}",
+                        //         );
+                        //       },
+                        //       itemCount: verticalHint.length,
+                        //     ),
+                        //   ),
+                        // ),
+                        // );
+                      }).toList(),
+                    ),
+                    /// Puzzle Board
+                    for (int i = 0; i < boardSolution.size!; i++) {
+                      TableRow(
+                        children: [
+                          for (int j = 0; j < boardSolution.size!)
+                        ]
+                      )
+                    }
+                  ],
                 ),
                 ToggleButtons(
                     onPressed: (index) {
